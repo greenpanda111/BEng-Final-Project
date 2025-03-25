@@ -10,6 +10,17 @@ int oldLeftButtonState = LOW;
 #define rightButtonPin A3
 int oldRightButtonState = LOW;
 
+#define xPin A6
+#define yPin A7
+#define LEFT_THRESHOLD 400
+#define RIGHT_THRESHOLD 800
+#define FORWARDS_THRESHOLD 400
+#define BACKWARDS_THRESHOLD 800
+
+int xValue;
+int yValue;
+
+
 void controlMotors(BLEDevice);
 
 void setup()
@@ -17,10 +28,14 @@ void setup()
   Serial.begin(9600);
   while (!Serial);
 
+  int xValue = 0;
+  int yValue = 0;
+
   // configure the buttons pin as input
   pinMode(forwardsButtonPin, INPUT);
 
-  //attachInterrupt(digitalPinToInterrupt(forwardsButtonPin), forwardsISR, RISING);
+  pinMode(xPin, INPUT);
+  pinMode(yPin, INPUT);
 
   // initialize the Bluetooth® Low Energy hardware
   BLE.begin();
@@ -59,11 +74,12 @@ void loop()
 
     // peripheral disconnected, start scanning again
     BLE.scanForUuid("1234");
-  }
+ }
 }
 
 void controlMotors(BLEDevice peripheral)
 {
+  
   // connect to the peripheral
   Serial.println("Connecting ...");
 
@@ -109,6 +125,32 @@ void controlMotors(BLEDevice peripheral)
   while (peripheral.connected())
   {
     // while the peripheral is connected
+
+
+    //read joystick pins
+    xValue = analogRead(xPin);
+    yValue = analogRead(yPin);
+
+    if (yValue < FORWARDS_THRESHOLD){
+      motorCharacteristic.writeValue((byte)'f');
+      Serial.println("joystick forwards");
+    }
+    else if (yValue > BACKWARDS_THRESHOLD){
+      motorCharacteristic.writeValue((byte)'b');
+      Serial.println("joystick backwards");
+    }
+
+    if (xValue < LEFT_THRESHOLD){
+      motorCharacteristic.writeValue((byte)'l');
+      Serial.println("joystick left");
+    }
+    else if (xValue > RIGHT_THRESHOLD){
+      motorCharacteristic.writeValue((byte)'l');
+      Serial.println("joystick right");
+    }
+     
+    
+    
 
     // read the button pins
     int forwardsButtonState = digitalRead(forwardsButtonPin);
@@ -202,5 +244,5 @@ void controlMotors(BLEDevice peripheral)
   }
 
   Serial.println("Peripheral disconnected");
-}
 
+}
