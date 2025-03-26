@@ -25,7 +25,7 @@ void controlMotors();
 void setup()
 {
   Serial.begin(9600);
-  Serial1.begin(9600);
+  Serial1.begin(9700);
 
   int xValue = 0;
   int yValue = 0;
@@ -39,124 +39,130 @@ void setup()
 
 void loop()
 {
+  Serial1.write((byte)'a');
+  Serial.println((char)Serial1.read());
   controlMotors();
 }
 
 void controlMotors()
 {
-  // read joystick pins
-  xValue = analogRead(xPin);
-  yValue = analogRead(yPin);
+  //if (Serial1.available())
+  //{
+    // read joystick pins
+    xValue = analogRead(xPin);
+    yValue = analogRead(yPin);
 
-  if (yValue < FORWARDS_THRESHOLD)
-  {
-    Serial1.write((byte)'f');
-    Serial.println("joystick forwards");
-  }
-  else if (yValue > BACKWARDS_THRESHOLD)
-  {
-    Serial1.write((byte)'b');
-    Serial.println("joystick backwards");
-  }
-
-  if (xValue < LEFT_THRESHOLD)
-  {
-    Serial1.write((byte)'l');
-    Serial.println("joystick left");
-  }
-  else if (xValue > RIGHT_THRESHOLD)
-  {
-    Serial1.write((byte)'l');
-    Serial.println("joystick right");
-  }
-
-  // read the button pins
-  int forwardsButtonState = digitalRead(forwardsButtonPin);
-  int backwardsButtonState = digitalRead(backwardsButtonPin);
-  int leftButtonState = digitalRead(leftButtonPin);
-  int rightButtonState = digitalRead(rightButtonPin);
-
-  if (oldForwardsButtonState != forwardsButtonState)
-  {
-    // button changed
-    oldForwardsButtonState = forwardsButtonState;
-
-    if (forwardsButtonState)
+    if (yValue < FORWARDS_THRESHOLD)
     {
-      Serial.println("Forwards Button pressed");
-
-      // forwards button is pressed, write forwards
       Serial1.write((byte)'f');
+      Serial.println("joystick forwards");
     }
-    else
+    else if (yValue > BACKWARDS_THRESHOLD)
     {
-      Serial.println("button released");
-
-      // button is released, write stop
-      Serial1.write((byte)'s');
-    }
-  }
-
-  if (oldBackwardsButtonState != backwardsButtonState)
-  {
-    // button changed
-    oldBackwardsButtonState = backwardsButtonState;
-
-    if (backwardsButtonState)
-    {
-      Serial.println("Backwards Button pressed");
-
-      // backwards button is pressed, write forwards
       Serial1.write((byte)'b');
+      Serial.println("joystick backwards");
     }
-    else
+
+    if (xValue < LEFT_THRESHOLD)
     {
-      Serial.println("button released");
-
-      // button is released, write stop
-      Serial1.write((byte)'s');
-    }
-  }
-
-  if (oldLeftButtonState != leftButtonState)
-  {
-    // button changed
-    oldLeftButtonState = leftButtonState;
-
-    if (leftButtonState)
-    {
-      Serial.println("Left Button pressed");
-
-      // left button is pressed, write forwards
       Serial1.write((byte)'l');
+      Serial.println("joystick left");
     }
-    else
+    else if (xValue > RIGHT_THRESHOLD)
     {
-      Serial.println("button released");
-
-      // button is released, write stop
-      Serial1.write((byte)'s');
+      Serial1.write((byte)'l');
+      Serial.println("joystick right");
     }
-  }
 
-  if (oldRightButtonState != rightButtonState)
-  {
-    // button changed
-    oldRightButtonState = rightButtonState;
+    // read the button pins
+    int forwardsButtonState = digitalRead(forwardsButtonPin);
+    int backwardsButtonState = digitalRead(backwardsButtonPin);
+    int leftButtonState = digitalRead(leftButtonPin);
+    int rightButtonState = digitalRead(rightButtonPin);
 
-    if (rightButtonState)
+    if (oldForwardsButtonState != forwardsButtonState)
     {
-      Serial.println("Right Button pressed");
+      // button changed
+      oldForwardsButtonState = forwardsButtonState;
 
-      // right button is pressed, write forwards
-      Serial1.write((byte)'r');
+      if (forwardsButtonState)
+      {
+        Serial.println("Forwards Button pressed");
+
+        // forwards button is pressed, write forwards
+        Serial1.write((byte)'f');
+      }
+      else
+      {
+        Serial.println("button released");
+
+        // button is released, write stop
+        Serial1.write((byte)'s');
+      }
     }
-    else
+
+    if (oldBackwardsButtonState != backwardsButtonState)
     {
-      Serial.println("button released");
+      // button changed
+      oldBackwardsButtonState = backwardsButtonState;
 
-      // button is released, write stop
-      Serial1.write((byte)'s');
+      if (backwardsButtonState)
+      {
+        Serial.println("Backwards Button pressed");
+
+        // backwards button is pressed, write forwards
+        Serial1.write((byte)'b');
+      }
+      else
+      {
+        Serial.println("button released");
+
+        // button is released, write stop
+        Serial1.write((byte)'s');
+      }
     }
-  }
+
+    if (oldLeftButtonState != leftButtonState)
+    {
+      // button changed
+      oldLeftButtonState = leftButtonState;
+
+      if (leftButtonState)
+      {
+        Serial.println("Left Button pressed");
+
+        // left button is pressed, write forwards
+        Serial1.write((byte)'l');
+      }
+      else
+      {
+        Serial.println("button released");
+
+        // button is released, write stop
+        Serial1.write((byte)'s');
+      }
+    }
+
+    if (oldRightButtonState != rightButtonState)
+    {
+      // button changed
+      oldRightButtonState = rightButtonState;
+
+      if (rightButtonState)
+      {
+        Serial.println("Right Button pressed");
+
+        // right button is pressed, write forwards
+        Serial1.write((byte)'r');
+      }
+      else
+      {
+        Serial.println("button released");
+
+        // button is released, write stop
+        Serial1.write((byte)'s');
+      }
+    }
+  //}
+  
 }
