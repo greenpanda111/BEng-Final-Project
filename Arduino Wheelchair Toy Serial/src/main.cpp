@@ -18,57 +18,55 @@ void turnRight();
 
 void setup()
 {
-
-    Serial.begin(115200);
     pinMode(LED_BUILTIN, OUTPUT);
     leftMotor.setup();
     rightMotor.setup();
-
-    while (!Serial)
-    {
-         // Do nothing, wait for serial to be ready.
-    }
+    Serial.begin(115200);
 }
 
 void loop()
 {
-
     if (Serial.available() > 0)
     {
+        digitalWrite(LED_BUILTIN, HIGH);
         opcode = Serial.read();
 
-        if ((char)opcode == 'f')
+        if ((char)opcode == 'F')
         {
             forward();
-            //Serial.println("Forwards");
-            // delay(10);
-            // stop();
+            // Serial.println("Forwards");
+            delay(100);
+            stop();
         }
-        if ((char)opcode == 'b')
+        if ((char)opcode == 'B')
         {
             reverse();
-            Serial.println("Backwards");
-            // delay(10);
-            // stop();
+            //Serial.println("Backwards");
+            delay(100);
+            stop();
         }
-        if ((char)opcode == 'l')
+        if ((char)opcode == 'L')
         {
             turnLeft();
-            Serial.println("Left");
-            // delay(10);
-            // stop();
+            //Serial.println("Left");
+            delay(100);
+            stop();
         }
-        if ((char)opcode == 'r')
+        if ((char)opcode == 'R')
         {
             turnRight();
-            Serial.println("Right");
-            // delay(10);
-            // stop();
+            //Serial.println("Right");
+            delay(100);
+            stop();
         }
         if ((char)opcode == 's')
         {
             stop();
         }
+    }
+    else
+    {
+        digitalWrite(LED_BUILTIN, LOW);
     }
 }
 
