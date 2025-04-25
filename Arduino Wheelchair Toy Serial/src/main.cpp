@@ -21,47 +21,43 @@ void setup()
     pinMode(LED_BUILTIN, OUTPUT);
     leftMotor.setup();
     rightMotor.setup();
-    Serial1.begin(115200);
+    Serial.begin(115200);
 }
 
 void loop()
 {
-    if (Serial1.available() > 0)
+    if (Serial.available() > 0)
     {
         digitalWrite(LED_BUILTIN, HIGH);
-        opcode = Serial1.read();
-        Serial.println(opcode);
+        opcode = Serial.read();
+        //Serial.println(opcode);
 
         if ((char)opcode == 'F')
         {
             forward();
-            Serial.println("Forwards");
+            //Serial.println("Forwards");
             delay(500);
             stop();
         }
         if ((char)opcode == 'B')
         {
             reverse();
-            Serial.println("Backwards");
+            //Serial.println("Backwards");
             delay(500);
             stop();
         }
         if ((char)opcode == 'L')
         {
             turnLeft();
-            Serial.println("Left");
+            //Serial.println("Left");
             delay(500);
             stop();
         }
         if ((char)opcode == 'R')
         {
             turnRight();
-            Serial.println("Right");
+            //Serial.println("Right");
             delay(500);
-            stop();
-        }
-        if ((char)opcode == 's')
-        {
             stop();
         }
     }
