@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include "Movement.h"
 
-#define DEFAULT_SPEED 1
+#define DEFAULT_SPEED 0.5
 #define LEFT_FORWARD 1
 #define RIGHT_FORWARD 0
 

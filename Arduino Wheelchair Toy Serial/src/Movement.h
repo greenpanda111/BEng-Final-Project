@@ -5,7 +5,7 @@
 
 using namespace mbed;
 
-#define RIGHT_MOTOR_PWM P0_1
+#define RIGHT_MOTOR_PWM P1_1
 #define RIGHT_MOTOR_DIRECTION P0_4
 #define LEFT_MOTOR_PWM P1_8
 #define LEFT_MOTOR_DIRECTION P0_5
