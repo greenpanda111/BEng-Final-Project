@@ -30,33 +30,33 @@ void loop()
     {
         digitalWrite(LED_BUILTIN, HIGH);
         opcode = Serial.read();
-        //Serial.println(opcode);
+        
 
         if ((char)opcode == 'F')
         {
             forward();
-            //Serial.println("Forwards");
+            
             delay(500);
             stop();
         }
         if ((char)opcode == 'B')
         {
             reverse();
-            //Serial.println("Backwards");
+            
             delay(500);
             stop();
         }
         if ((char)opcode == 'L')
         {
             turnLeft();
-            //Serial.println("Left");
+           
             delay(500);
             stop();
         }
         if ((char)opcode == 'R')
         {
             turnRight();
-            //Serial.println("Right");
+            
             delay(500);
             stop();
         }
