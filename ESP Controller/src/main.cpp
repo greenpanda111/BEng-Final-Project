@@ -43,7 +43,11 @@ void setup()
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
-    Serial.println("Connecting to WiFi...");
+    //Serial.println("Connecting to WiFi...");
+    Serial.print("X: ");
+    Serial.println(analogRead(JOYSTICK_X));
+    Serial.print("Y: ");
+    Serial.println(analogRead(JOYSTICK_Y));
   }
 
   Serial.print("WiFi connected with IP: ");
@@ -66,24 +70,28 @@ void loop()
   if (digitalRead(FOUR_SWITCH_TOGGLE) == HIGH)
   {
     mode = 0;
+    client.write('Z');
   }
   else if (digitalRead(TWO_SWITCH_TOGGLE == HIGH))
   {
     mode = 1;
+    client.write('X');
   }
   else if (digitalRead(SINGLE_SWITCH_TOGGLE == HIGH))
   {
     mode = 2;
+    client.write('C');
   }
   else if (digitalRead(JOYSTICK_TOGGLE == HIGH))
   {
     mode = 3;
+    client.write('V');
   }
 
   switch (mode)
   {
-  case 0:
-    client.write("0");
+  case 'Z':
+
     if (digitalRead(BUTTON_ONE) == LOW)
     {
       client.write('F');
@@ -114,8 +122,8 @@ void loop()
     }
     break;
 
-  case 1:
-    client.write("1");
+  case 'N':
+
     if (digitalRead(BUTTON_ONE) == LOW & digitalRead(BUTTON_TWO) == LOW)
     {
       client.write('F');
@@ -133,18 +141,19 @@ void loop()
     }
     break;
 
-  case 2:
-    client.write("2");
+  case 'C':
+
     if (digitalRead(BUTTON_ONE) == LOW)
     {
       client.write('F');
     }
 
-  case 3:
-    client.write("3");
-    client.write(analogRead(JOYSTICK_X));
-    client.write(analogRead(JOYSTICK_Y));
-
+  case 'V':
+    int x = analogRead(JOYSTICK_X);
+    int y = analogRead(JOYSTICK_Y);
+    client.write('X');
+    client.write(x);
+    client.write(y);
     break;
   }
 
