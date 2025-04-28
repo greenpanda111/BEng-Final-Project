@@ -131,13 +131,13 @@ void loop()
     }
     else if (digitalRead(BUTTON_ONE) == LOW)
     {
-      client.write("LF");
-      Serial.println("Sent: LF");
+      client.write('O');
+      Serial.println("Sent: O");
     }
     else if (digitalRead(BUTTON_TWO) == LOW)
     {
-      client.write("RF");
-      Serial.println("Sent: RF");
+      client.write('P');
+      Serial.println("Sent: P");
     }
     break;
 
