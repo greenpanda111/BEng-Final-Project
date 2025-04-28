@@ -41,12 +41,12 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
             command = data.decode('utf-8').strip()
 
-            if command in ["0", "1", "2", "3"]:
+            if command in ['Z', 'X', 'C', 'V']:
                 print(f"Mode Received: {command}")
                 mode = command
                 send_character_over_serial(mode)
             
-            if mode == 0:
+            if mode == 'Z':
             
                 if command in ['F', 'B', 'L', 'R']:
                     print(f"Received command: {command}")
@@ -54,15 +54,15 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 else:
                  print(f"Unknown command: {command}")
 
-            elif mode == 1:
+            elif mode == 'N':
 
-                if command in ['F', "LF", "RF"]:
+                if command in ['F', 'O', 'P']:
                     print(f"Received command: {command}")
                     send_character_over_serial(command)
                 else:
                  print(f"Unknown command: {command}")
             
-            elif mode == 2:
+            elif mode == 'C':
 
                 if command in ['F']:
                     print(f"Received command: {command}")
@@ -70,8 +70,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 else:
                     print(f"Unknown command: {command}")
 
-            elif mode == 3:
-                
+            elif mode == 'V':
+
                 if command in ['X','Y']:
                     send_character_over_serial(command)
                 elif command in [int]:
