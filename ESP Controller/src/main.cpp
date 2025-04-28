@@ -22,7 +22,7 @@ const uint16_t serverPort = 5001;
 
 WiFiClient client;
 
-int mode = 0;
+int mode = 3;
 
 void setup()
 {
@@ -32,10 +32,10 @@ void setup()
   pinMode(BUTTON_TWO, INPUT_PULLUP);
   pinMode(BUTTON_THREE, INPUT_PULLUP);
   pinMode(BUTTON_FOUR, INPUT_PULLUP);
-  pinMode(FOUR_SWITCH_TOGGLE, INPUT_PULLDOWN);
+/*   pinMode(FOUR_SWITCH_TOGGLE, INPUT_PULLDOWN);
   pinMode(TWO_SWITCH_TOGGLE, INPUT_PULLDOWN);
   pinMode(SINGLE_SWITCH_TOGGLE, INPUT_PULLDOWN);
-  pinMode(JOYSTICK_TOGGLE, INPUT_PULLDOWN);
+  pinMode(JOYSTICK_TOGGLE, INPUT_PULLDOWN); */
   pinMode(JOYSTICK_X, INPUT);
   pinMode(JOYSTICK_Y, INPUT);
 
@@ -43,11 +43,7 @@ void setup()
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
-    //Serial.println("Connecting to WiFi...");
-    Serial.print("X: ");
-    Serial.println(analogRead(JOYSTICK_X));
-    Serial.print("Y: ");
-    Serial.println(analogRead(JOYSTICK_Y));
+    Serial.println("Connecting to WiFi...");
   }
 
   Serial.print("WiFi connected with IP: ");
@@ -67,7 +63,7 @@ void loop()
     Serial.println("Connected to server");
   }
 
-  if (digitalRead(FOUR_SWITCH_TOGGLE) == HIGH)
+ /*  if (digitalRead(FOUR_SWITCH_TOGGLE) == HIGH)
   {
     mode = 0;
     client.write('Z');
@@ -86,7 +82,7 @@ void loop()
   {
     mode = 3;
     client.write('V');
-  }
+  } */
 
   switch (mode)
   {
