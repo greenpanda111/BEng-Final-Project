@@ -1,6 +1,8 @@
 import socket
 import serial
 import struct
+import sys
+import time
 
 HOST = '0.0.0.0'
 PORT = 5001
@@ -20,16 +22,16 @@ def recv_exact(conn, length):
     return data
 
 def send_character_over_serial(cmd):
-    packed_data = struct.pack("c", cmd.encode('utf-8'))
+    #packed_data = struct.pack("c", cmd.encode('utf-8'))
     try:
-        ser.write(packed_data)
+        ser.write(b'C' + cmd.encode())
     except:
         print("Write failed")
 
 def send_integer_over_serial(i):
-    packed_data = struct.pack("i",i)
+    #packed_data = struct.pack('>I',i)
     try:
-        ser.write(packed_data)
+        ser.write(b'I' + struct.pack('<I',i))
     except:
         print("Write failed")
         
@@ -44,6 +46,14 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print(f"Connected by {addr}")
         buffer = b""
         mode = 'Z'
+        ch =''
+        num=0
+        prevX=0
+        prevY=0
+        xFlag=False
+        yFlag=False
+        prevData = ""
+
         while True:
             try:
                 msg_type_data = recv_exact(conn, 1)
@@ -54,8 +64,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 
                 if msg_type == 'I':
                     int_bytes = recv_exact(conn,4)
-                    number = struct.unpack('<I', int_bytes)[0]
-                    print(f"[Integer] {number}")
+                    num = struct.unpack('<I', int_bytes)[0]
+                    print(f"[Integer] {num}")
                 elif (msg_type == 'C'):
                     char_byte = recv_exact(conn, 1)
                     ch = char_byte.decode()
@@ -66,10 +76,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 if ch in ['Z', 'N', 'C', 'V']:
                     print(f"Mode Received: {ch}")
                     mode = ch
-                    send_character_over_serial(mode)
+                    
             
                 if mode == 'Z':
-                
+                    send_character_over_serial(mode)
                     if ch in ['F', 'B', 'L', 'R']:
                         print(f"Received command: {ch}")
                         send_character_over_serial(ch)
@@ -77,7 +87,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                      print(f"Unknown command: {ch}")
     
                 elif mode == 'N':
-    
+                    send_character_over_serial(mode)
                     if ch in ['F', 'O', 'P']:
                         print(f"Received command: {ch}")
                         send_character_over_serial(ch)
@@ -85,20 +95,41 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                      print(f"Unknown command: {ch}")
                 
                 elif mode == 'C':
-    
+                    send_character_over_serial(mode)
                     if ch in ['F']:
                         print(f"Received command: {ch}")
                         send_character_over_serial(ch)
                     else:
                         print(f"Unknown command: {ch}")
-    
+                
                 elif mode == 'V':
-                    if ch in ['X', 'Y']:
-                        send_character_over_serial(ch)
-                        send_integer_(num)
-                    
+                    send_character_over_serial(mode)
+                    if ch == 'X':
+                        xFlag=True
+                    elif ch =='Y':
+                        yFlag=True
+                    else:
+                        print(f"Unknown command: {ch}")
+                            
+                    if xFlag==True and msg_type=='I':
+                        if num!=prevX:
+                            print("sent X")
+                            send_character_over_serial('X')
+                            send_integer_over_serial(num)
+                        prevX = num
+                        xFlag=False
+                        
+                    if yFlag==True and msg_type=='I':
+                        if num!= prevY:
+                            print("sent Y")
+                            send_character_over_serial('Y')
+                            send_integer_over_serial(num)
+                        prevY = num
+                        yFlag=False
+                        
                 else:
                     print(f"Unknown mode: {ch}")
+                time.sleep(0.01)
                 
             except ConnectionError:
                 print("Connection closed")
