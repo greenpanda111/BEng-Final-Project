@@ -22,7 +22,7 @@ const uint16_t serverPort = 5001;
 
 WiFiClient client;
 
-int mode = 3;
+char mode = 'V';
 
 void setup()
 {
@@ -32,10 +32,10 @@ void setup()
   pinMode(BUTTON_TWO, INPUT_PULLUP);
   pinMode(BUTTON_THREE, INPUT_PULLUP);
   pinMode(BUTTON_FOUR, INPUT_PULLUP);
-/*   pinMode(FOUR_SWITCH_TOGGLE, INPUT_PULLDOWN);
+  pinMode(FOUR_SWITCH_TOGGLE, INPUT_PULLDOWN);
   pinMode(TWO_SWITCH_TOGGLE, INPUT_PULLDOWN);
   pinMode(SINGLE_SWITCH_TOGGLE, INPUT_PULLDOWN);
-  pinMode(JOYSTICK_TOGGLE, INPUT_PULLDOWN); */
+  pinMode(JOYSTICK_TOGGLE, INPUT_PULLDOWN);
   pinMode(JOYSTICK_X, INPUT);
   pinMode(JOYSTICK_Y, INPUT);
 
@@ -50,8 +50,49 @@ void setup()
   Serial.println(WiFi.localIP());
 }
 
+void sendChar(char ch){
+  client.write('C');
+  client.write(ch);
+}
+
+void sendInt(int i){
+  client.write('I');
+  client.write((uint8_t*)&i, sizeof(i));
+}
+
 void loop()
 {
+
+  /* if (digitalRead(FOUR_SWITCH_TOGGLE) == HIGH)
+  {
+    mode = 'Z';
+    Serial.println("4 pin mode selected");
+    client.write('Z');
+  }
+  if (digitalRead(TWO_SWITCH_TOGGLE == HIGH))
+  {
+    mode = 'N';
+    Serial.println("2 pin mode selected");
+    client.write('N');
+  }
+  if (digitalRead(SINGLE_SWITCH_TOGGLE == HIGH))
+  {
+    mode = 'C';
+    Serial.println("1 pin mode selected");
+    client.write('C');
+  }
+  if (digitalRead(JOYSTICK_TOGGLE == HIGH))
+  {
+    mode = 'V';
+    Serial.println("Joystick mode selected");
+    client.write('V');
+  }
+  else
+  {
+    Serial.print("No mode selected");
+  } */
+
+
   if (!client.connected())
   {
     if (!client.connect(serverIP, serverPort))
@@ -63,58 +104,32 @@ void loop()
     Serial.println("Connected to server");
   }
 
- /*  if (digitalRead(FOUR_SWITCH_TOGGLE) == HIGH)
-  {
-    mode = 0;
-    client.write('Z');
-  }
-  else if (digitalRead(TWO_SWITCH_TOGGLE == HIGH))
-  {
-    mode = 1;
-    client.write('X');
-  }
-  else if (digitalRead(SINGLE_SWITCH_TOGGLE == HIGH))
-  {
-    mode = 2;
-    client.write('C');
-  }
-  else if (digitalRead(JOYSTICK_TOGGLE == HIGH))
-  {
-    mode = 3;
-    client.write('V');
-  } */
-
   switch (mode)
   {
   case 'Z':
 
     if (digitalRead(BUTTON_ONE) == LOW)
     {
-      client.write('F');
+      sendChar('F');
       Serial.println("Sent: F");
     }
 
     if (digitalRead(BUTTON_TWO) == LOW)
     {
-      client.write('B');
+      sendChar('B');
       Serial.println("Sent: B");
     }
 
     if (digitalRead(BUTTON_THREE) == LOW)
     {
-      client.write('L');
+      sendChar('L');
       Serial.println("Sent: L");
     }
 
     if (digitalRead(BUTTON_FOUR) == LOW)
     {
-      client.write('R');
+      sendChar('R');
       Serial.println("Sent: R");
-    }
-
-    else
-    {
-      client.write('s');
     }
     break;
 
@@ -122,17 +137,17 @@ void loop()
 
     if (digitalRead(BUTTON_ONE) == LOW & digitalRead(BUTTON_TWO) == LOW)
     {
-      client.write('F');
+      sendChar('F');
       Serial.println("Sent: F");
     }
     else if (digitalRead(BUTTON_ONE) == LOW)
     {
-      client.write('O');
+      sendChar('O');
       Serial.println("Sent: O");
     }
     else if (digitalRead(BUTTON_TWO) == LOW)
     {
-      client.write('P');
+      sendChar('P');
       Serial.println("Sent: P");
     }
     break;
@@ -141,15 +156,23 @@ void loop()
 
     if (digitalRead(BUTTON_ONE) == LOW)
     {
-      client.write('F');
+      sendChar('F');
+      Serial.println("Sent: F");
     }
 
   case 'V':
     int x = analogRead(JOYSTICK_X);
     int y = analogRead(JOYSTICK_Y);
-    client.write('X');
-    client.write(x);
-    client.write(y);
+    Serial.println("Sent 'X' ");
+    sendChar('X');
+    Serial.print("Sent: ");
+    Serial.println(x);
+    Serial.print("Sent: ");
+    Serial.println(y);
+    sendInt(x);
+    Serial.println("Sent 'Y' ");
+    sendChar('Y');
+    sendInt(y);
     break;
   }
 
