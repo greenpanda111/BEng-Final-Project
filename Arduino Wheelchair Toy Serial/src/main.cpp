@@ -16,11 +16,13 @@ void stop();
 void turnLeft();
 void turnRight();
 
-int mode = 'Z';
-int X = 0;
-int Y = 0;
-bool X_Flag = false;
-bool Y_Flag = false;
+int mode;
+int X;
+int Y;
+bool X_Flag;
+bool Y_Flag;
+char command;
+int num;
 
 void setup()
 {
@@ -28,21 +30,70 @@ void setup()
     leftMotor.setup();
     rightMotor.setup();
     Serial.begin(115200);
+    mode = 'Z';
+    num = 0;
+    X = -1;
+    Y = -1;
+    X_Flag = false;
+    Y_Flag = false;
+    command = 'S';
 }
 
 void loop()
 {
     if (Serial.available() > 0)
     {
-        digitalWrite(LED_BUILTIN, HIGH);
-        opcode = Serial.read();
-
-        if ((char)opcode == 'Z' || (char)opcode == 'X' || (char)opcode == 'C' || (char)opcode == 'V')
+        if (Serial.available() > 1)
         {
-            mode = (char)opcode;
+            char header = Serial.read();
+            if (header == 'I')
+            {
+                uint8_t b0 = Serial.read();
+                uint8_t b1 = Serial.read();
+                uint8_t b2 = Serial.read();
+                uint8_t b3 = Serial.read();
+
+                num = b0 | (b1 << 8) | (b2 << 16) | (b3 << 24);
+                if (X_Flag == true)
+                {
+                    X = num;
+                    X_Flag = false;
+                }
+                else if (Y_Flag == true)
+                {
+                    Y = num;
+                    Y_Flag = false;
+                }
+            }
+            else if (header == 'C')
+            {
+                // Wait for 1 character byte
+                if (Serial.available() >= 1)
+                {
+                    if (opcode == 'X')
+                    {
+                        X_Flag = true;
+                    }
+                    else if (opcode == 'Y')
+                    {
+                        Y_Flag = false;
+                    }
+                    else
+                    {
+                        opcode = (char)Serial.read();
+                    }
+                }
+            }
         }
 
-        char command = (char)opcode;
+        if (opcode == 'Z' || opcode == 'X' || opcode == 'C' || opcode == 'V')
+        {
+            mode = opcode;
+        }
+        else
+        {
+            command = opcode;
+        }
 
         switch (mode)
         {
@@ -50,46 +101,47 @@ void loop()
             if (command == 'F')
             {
                 forward();
-                delay(50);
+                delay(10);
                 stop();
             }
             if (command == 'B')
             {
                 reverse();
-                delay(50);
+                delay(10);
                 stop();
             }
             if (command == 'L')
             {
                 turnLeft();
-                delay(50);
+                delay(10);
                 stop();
             }
             if (command == 'R')
             {
                 turnRight();
-                delay(50);
+                delay(10);
                 stop();
             }
             break;
 
         case ('N'):
+            digitalWrite(LED_BUILTIN, HIGH);
             if (command == 'F')
             {
                 forward();
-                delay(50);
+                delay(10);
                 stop();
             }
             if (command == 'O')
             {
                 leftMotor.move(DEFAULT_SPEED);
-                delay(50);
+                delay(10);
                 stop();
             }
             if (command == 'P')
             {
                 rightMotor.move(DEFAULT_SPEED);
-                delay(50);
+                delay(10);
                 stop();
             }
 
@@ -101,44 +153,31 @@ void loop()
             {
                 stop();
                 forward();
-                delay(50);
+                delay(100);
                 stop();
             }
             break;
 
         case ('V'):
-            if (X_Flag == true)
+
+            if ((X >= 0) & (Y >= 0))
             {
-                X = opcode;
-                X_Flag = false;
-                Y_Flag = true;
-            }
-            else if (Y_Flag == true)
-            {
-                Y = opcode;
-                Y_Flag = false;
-            }
-            if (command == 'X')
-            {
-                X_Flag = true;
-            }
-            if ((X > 0) & (Y > 0))
-            {
-                // Map joystick values from (0-1023) to (-512 to +512)
-                int mappedX = map(X, 0, 1023, -512, 512);
-                int mappedY = map(Y, 0, 1023, -512, 512);
+
+                // Map joystick values
+                int mappedX = map(X, 0, 4095, -2048, 2048);
+                int mappedY = map(Y, 0, 4095, -2048, 2048);
 
                 // Mix for differential drive
                 int leftSpeed = mappedY + mappedX;
                 int rightSpeed = mappedY - mappedX;
 
                 // Constrain raw speeds
-                leftSpeed = constrain(leftSpeed, -512, 512);
-                rightSpeed = constrain(rightSpeed, -512, 512);
+                leftSpeed = constrain(leftSpeed, -2048, 2047);
+                rightSpeed = constrain(rightSpeed, -512, 2047);
 
                 // Normalize speeds to 0.0 - 1.0 range
-                float leftPWM = (float)(leftSpeed + 512) / 1024.0;   // Map from [-512, 512] -> [0.0, 1.0]
-                float rightPWM = (float)(rightSpeed + 512) / 1024.0; // Same mapping
+                float leftPWM = (float)(leftSpeed + 2048) / 4095.0; // Map from [-2048, 2048] -> [0.0, 1.0]
+                float rightPWM = (float)(rightSpeed + 2048) / 4095.0;
 
                 // Constrain just in case (floating-point precision safety)
                 leftPWM = constrain(leftPWM, 0.0, 1.0);
@@ -154,8 +193,8 @@ void loop()
     {
         digitalWrite(LED_BUILTIN, LOW);
     }
+    delay(10);
 }
-
 void forward()
 {
     leftMotor.move(DEFAULT_SPEED);

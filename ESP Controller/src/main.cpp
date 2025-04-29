@@ -22,7 +22,7 @@ const uint16_t serverPort = 5001;
 
 WiFiClient client;
 
-char mode = 'V';
+char mode = 'N';
 
 void setup()
 {
@@ -57,7 +57,7 @@ void sendChar(char ch){
 
 void sendInt(int i){
   client.write('I');
-  client.write((uint8_t*)&i, sizeof(i));
+  client.write((uint8_t*)&i, 4);
 }
 
 void loop()
@@ -107,6 +107,8 @@ void loop()
   switch (mode)
   {
   case 'Z':
+  Serial.println("Sent 'Z' ");
+    sendChar('Z');
 
     if (digitalRead(BUTTON_ONE) == LOW)
     {
@@ -135,6 +137,8 @@ void loop()
 
   case 'N':
 
+  Serial.println("Sent 'N' ");
+    sendChar('N');
     if (digitalRead(BUTTON_ONE) == LOW & digitalRead(BUTTON_TWO) == LOW)
     {
       sendChar('F');
@@ -153,6 +157,8 @@ void loop()
     break;
 
   case 'C':
+  Serial.println("Sent 'C' ");
+    sendChar('C');
 
     if (digitalRead(BUTTON_ONE) == LOW)
     {
@@ -161,6 +167,8 @@ void loop()
     }
 
   case 'V':
+    Serial.println("Sent 'V' ");
+    sendChar('V');
     int x = analogRead(JOYSTICK_X);
     int y = analogRead(JOYSTICK_Y);
     Serial.println("Sent 'X' ");
@@ -168,13 +176,14 @@ void loop()
     Serial.print("Sent: ");
     Serial.println(x);
     Serial.print("Sent: ");
-    Serial.println(y);
     sendInt(x);
+
     Serial.println("Sent 'Y' ");
+    Serial.println(y);
     sendChar('Y');
     sendInt(y);
     break;
   }
 
-  delay(10); // debounce and CPU relaxation
+  delay(1000); // debounce and CPU relaxation
 }
