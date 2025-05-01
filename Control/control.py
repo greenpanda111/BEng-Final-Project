@@ -7,7 +7,7 @@ import time
 HOST = '0.0.0.0'
 PORT = 5001
 
-arduino_port = "/dev/ttyACM0"
+arduino_port = "/dev/ttyUSB0"
 BAUD_RATE = 115200
 ser = serial.Serial(arduino_port, BAUD_RATE)
 
