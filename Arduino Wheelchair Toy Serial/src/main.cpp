@@ -5,8 +5,6 @@
 #define LEFT_FORWARD 1
 #define RIGHT_FORWARD 0
 
-unsigned char opcode;
-
 Motor leftMotor(LEFT_MOTOR_PWM, LEFT_MOTOR_DIRECTION, LEFT_FORWARD);
 Motor rightMotor(RIGHT_MOTOR_PWM, RIGHT_MOTOR_DIRECTION, RIGHT_FORWARD);
 
@@ -16,20 +14,22 @@ void stop();
 void turnLeft();
 void turnRight();
 
-int mode;
+char mode;
 int X;
 int Y;
 bool X_Flag;
 bool Y_Flag;
 char command;
 int num;
+char opcode;
 
 void setup()
 {
     pinMode(LED_BUILTIN, OUTPUT);
     leftMotor.setup();
     rightMotor.setup();
-    Serial.begin(115200);
+    Serial1.begin(115200);
+    Serial.begin(9600);
     mode = 'Z';
     num = 0;
     X = -1;
@@ -41,46 +41,55 @@ void setup()
 
 void loop()
 {
-    if (Serial.available() > 0)
+    if (Serial1.available() > 0)
     {
-        if (Serial.available() > 1)
+        if (Serial1.available() > 1)
         {
-            char header = Serial.read();
+            char header = Serial1.read();
+            //Serial.print(header);
+            //Serial.println(" received");
+
             if (header == 'I')
             {
-                uint8_t b0 = Serial.read();
-                uint8_t b1 = Serial.read();
-                uint8_t b2 = Serial.read();
-                uint8_t b3 = Serial.read();
+                uint8_t b0 = Serial1.read();
+                uint8_t b1 = Serial1.read();
+                uint8_t b2 = Serial1.read();
+                uint8_t b3 = Serial1.read();
 
                 num = b0 | (b1 << 8) | (b2 << 16) | (b3 << 24);
                 if (X_Flag == true)
                 {
                     X = num;
                     X_Flag = false;
+                    Serial.print("x:");
+                    Serial.println(X);
                 }
                 else if (Y_Flag == true)
                 {
                     Y = num;
                     Y_Flag = false;
+                    Serial.print("y:");
+                    Serial.println(Y);
                 }
             }
             else if (header == 'C')
             {
                 // Wait for 1 character byte
-                if (Serial.available() >= 1)
+                if (Serial1.available() >= 1)
                 {
+                    opcode = (char)Serial1.read();
+                    //Serial.print(opcode);
+                    //Serial.println(" received");
+
                     if (opcode == 'X')
                     {
                         X_Flag = true;
+                        //Serial.println("x received");
                     }
                     else if (opcode == 'Y')
                     {
-                        Y_Flag = false;
-                    }
-                    else
-                    {
-                        opcode = (char)Serial.read();
+                        Y_Flag = true;
+                        //Serial.println("y received");
                     }
                 }
             }
