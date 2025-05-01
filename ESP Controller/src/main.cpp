@@ -22,7 +22,7 @@ const uint16_t serverPort = 5001;
 
 WiFiClient client;
 
-char mode = 'N';
+char mode = 'V';
 
 void setup()
 {
