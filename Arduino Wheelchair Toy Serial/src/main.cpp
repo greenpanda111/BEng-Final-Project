@@ -46,8 +46,8 @@ void loop()
         if (Serial1.available() > 1)
         {
             char header = Serial1.read();
-            //Serial.print(header);
-            //Serial.println(" received");
+            // Serial.print(header);
+            // Serial.println(" received");
 
             if (header == 'I')
             {
@@ -61,15 +61,15 @@ void loop()
                 {
                     X = num;
                     X_Flag = false;
-                    Serial.print("x:");
-                    Serial.println(X);
+                    // Serial.print("x:");
+                    // Serial.println(X);
                 }
                 else if (Y_Flag == true)
                 {
                     Y = num;
                     Y_Flag = false;
-                    Serial.print("y:");
-                    Serial.println(Y);
+                    // Serial.print("y:");
+                    // Serial.println(Y);
                 }
             }
             else if (header == 'C')
@@ -78,18 +78,18 @@ void loop()
                 if (Serial1.available() >= 1)
                 {
                     opcode = (char)Serial1.read();
-                    //Serial.print(opcode);
-                    //Serial.println(" received");
+                    // Serial.print(opcode);
+                    // Serial.println(" received");
 
                     if (opcode == 'X')
                     {
                         X_Flag = true;
-                        //Serial.println("x received");
+                        // Serial.println("x received");
                     }
                     else if (opcode == 'Y')
                     {
                         Y_Flag = true;
-                        //Serial.println("y received");
+                        // Serial.println("y received");
                     }
                 }
             }
@@ -173,24 +173,36 @@ void loop()
             {
 
                 // Map joystick values
-                int mappedX = map(X, 0, 4095, -2048, 2048);
-                int mappedY = map(Y, 0, 4095, -2048, 2048);
+                int mappedX = map(X, 0, 4096, -2048, 2047);
+                int mappedY = map(Y, 0, 4096, -2048, 2047);
+
+                Serial.print("mapX:");
+                Serial.println(mappedX);
+
+                if (abs(X) < 100)
+                    X = 0;
+                if (abs(Y) < 100)
+                    Y = 0;
 
                 // Mix for differential drive
                 int leftSpeed = mappedY + mappedX;
                 int rightSpeed = mappedY - mappedX;
 
                 // Constrain raw speeds
-                leftSpeed = constrain(leftSpeed, -2048, 2047);
-                rightSpeed = constrain(rightSpeed, -512, 2047);
+                leftSpeed = constrain(leftSpeed, -2048, 2048);
+                rightSpeed = constrain(rightSpeed, -2048, 2048);
 
                 // Normalize speeds to 0.0 - 1.0 range
-                float leftPWM = (float)(leftSpeed + 2048) / 4095.0; // Map from [-2048, 2048] -> [0.0, 1.0]
-                float rightPWM = (float)(rightSpeed + 2048) / 4095.0;
+                // float leftPWM = (float)(leftSpeed + 2048) / 4095.0; // Map from [-2048, 2048] -> [0.0, 1.0]
+                // float rightPWM = (float)(rightSpeed + 2048) / 4095.0;
 
                 // Constrain just in case (floating-point precision safety)
-                leftPWM = constrain(leftPWM, 0.0, 1.0);
-                rightPWM = constrain(rightPWM, 0.0, 1.0);
+
+                float leftPWM = constrain(leftPWM, -1.0, 1.0);
+                float rightPWM = constrain(rightPWM, -1.0, 1.0);
+
+                Serial.print("leftPWM:");
+                Serial.println(leftPWM);
 
                 leftMotor.move(leftPWM);
                 rightMotor.move(rightPWM);

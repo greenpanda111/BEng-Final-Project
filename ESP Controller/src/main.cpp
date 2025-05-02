@@ -50,19 +50,21 @@ void setup()
   Serial.println(WiFi.localIP());
 }
 
-void sendChar(char ch){
+void sendChar(char ch)
+{
   client.write('C');
   client.write(ch);
 }
 
-void sendInt(int i){
+void sendInt(int i)
+{
   client.write('I');
-  client.write((uint8_t*)&i, 4);
+  client.write((uint8_t *)&i, 4);
 }
 
 void loop()
 {
-   if (digitalRead(FOUR_SWITCH_TOGGLE) == LOW)
+  if (digitalRead(FOUR_SWITCH_TOGGLE) == LOW)
   {
     mode = 'Z';
     Serial.println("4 pin mode selected");
@@ -88,9 +90,9 @@ void loop()
   }
   else
   {
+    mode = 'K';
     Serial.print("No mode selected");
-  } 
-
+  }
 
   if (!client.connected())
   {
@@ -106,7 +108,8 @@ void loop()
   switch (mode)
   {
   case 'Z':
-  Serial.println("Sent 'Z' ");
+  {
+    Serial.println("Sent 'Z' ");
     sendChar('Z');
 
     if (digitalRead(BUTTON_ONE) == LOW)
@@ -133,10 +136,10 @@ void loop()
       Serial.println("Sent: R");
     }
     break;
-
+  }
   case 'N':
-
-  Serial.println("Sent 'N' ");
+{
+    Serial.println("Sent 'N' ");
     sendChar('N');
     if (digitalRead(BUTTON_ONE) == LOW & digitalRead(BUTTON_TWO) == LOW)
     {
@@ -154,9 +157,10 @@ void loop()
       Serial.println("Sent: P");
     }
     break;
-
+  }
   case 'C':
-  Serial.println("Sent 'C' ");
+  {
+    Serial.println("Sent 'C' ");
     sendChar('C');
 
     if (digitalRead(BUTTON_ONE) == LOW)
@@ -164,8 +168,10 @@ void loop()
       sendChar('F');
       Serial.println("Sent: F");
     }
-
+    break;
+  }
   case 'V':
+  {
     Serial.println("Sent 'V' ");
     sendChar('V');
     int x = analogRead(JOYSTICK_X);
@@ -182,6 +188,12 @@ void loop()
     sendChar('Y');
     sendInt(y);
     break;
+  }
+  case 'K':
+  {
+    Serial.println("no mode selected");
+    break;
+  }
   }
 
   delay(1000); // debounce and CPU relaxation
