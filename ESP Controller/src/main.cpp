@@ -39,15 +39,15 @@ void setup()
   pinMode(JOYSTICK_X, INPUT);
   pinMode(JOYSTICK_Y, INPUT);
 
-  // WiFi.begin(ssid, password);
-  // while (WiFi.status() != WL_CONNECTED)
-  // {
-  //   delay(500);
-  //   Serial.println("Connecting to WiFi...");
-  // }
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.println("Connecting to WiFi...");
+  }
 
-  // Serial.print("WiFi connected with IP: ");
-  // Serial.println(WiFi.localIP());
+  Serial.print("WiFi connected with IP: ");
+  Serial.println(WiFi.localIP());
 }
 
 void sendChar(char ch){
@@ -92,97 +92,97 @@ void loop()
   } 
 
 
-  // if (!client.connected())
-  // {
-  //   if (!client.connect(serverIP, serverPort))
-  //   {
-  //     Serial.println("Connection to host failed");
-  //     delay(1000);
-  //     return;
-  //   }
-  //   Serial.println("Connected to server");
-  // }
+  if (!client.connected())
+  {
+    if (!client.connect(serverIP, serverPort))
+    {
+      Serial.println("Connection to host failed");
+      delay(1000);
+      return;
+    }
+    Serial.println("Connected to server");
+  }
 
-  // switch (mode)
-  // {
-  // case 'Z':
-  // Serial.println("Sent 'Z' ");
-  //   sendChar('Z');
+  switch (mode)
+  {
+  case 'Z':
+  Serial.println("Sent 'Z' ");
+    sendChar('Z');
 
-  //   if (digitalRead(BUTTON_ONE) == LOW)
-  //   {
-  //     sendChar('F');
-  //     Serial.println("Sent: F");
-  //   }
+    if (digitalRead(BUTTON_ONE) == LOW)
+    {
+      sendChar('F');
+      Serial.println("Sent: F");
+    }
 
-  //   if (digitalRead(BUTTON_TWO) == LOW)
-  //   {
-  //     sendChar('B');
-  //     Serial.println("Sent: B");
-  //   }
+    if (digitalRead(BUTTON_TWO) == LOW)
+    {
+      sendChar('B');
+      Serial.println("Sent: B");
+    }
 
-  //   if (digitalRead(BUTTON_THREE) == LOW)
-  //   {
-  //     sendChar('L');
-  //     Serial.println("Sent: L");
-  //   }
+    if (digitalRead(BUTTON_THREE) == LOW)
+    {
+      sendChar('L');
+      Serial.println("Sent: L");
+    }
 
-  //   if (digitalRead(BUTTON_FOUR) == LOW)
-  //   {
-  //     sendChar('R');
-  //     Serial.println("Sent: R");
-  //   }
-  //   break;
+    if (digitalRead(BUTTON_FOUR) == LOW)
+    {
+      sendChar('R');
+      Serial.println("Sent: R");
+    }
+    break;
 
-  // case 'N':
+  case 'N':
 
-  // Serial.println("Sent 'N' ");
-  //   sendChar('N');
-  //   if (digitalRead(BUTTON_ONE) == LOW & digitalRead(BUTTON_TWO) == LOW)
-  //   {
-  //     sendChar('F');
-  //     Serial.println("Sent: F");
-  //   }
-  //   else if (digitalRead(BUTTON_ONE) == LOW)
-  //   {
-  //     sendChar('O');
-  //     Serial.println("Sent: O");
-  //   }
-  //   else if (digitalRead(BUTTON_TWO) == LOW)
-  //   {
-  //     sendChar('P');
-  //     Serial.println("Sent: P");
-  //   }
-  //   break;
+  Serial.println("Sent 'N' ");
+    sendChar('N');
+    if (digitalRead(BUTTON_ONE) == LOW & digitalRead(BUTTON_TWO) == LOW)
+    {
+      sendChar('F');
+      Serial.println("Sent: F");
+    }
+    else if (digitalRead(BUTTON_ONE) == LOW)
+    {
+      sendChar('O');
+      Serial.println("Sent: O");
+    }
+    else if (digitalRead(BUTTON_TWO) == LOW)
+    {
+      sendChar('P');
+      Serial.println("Sent: P");
+    }
+    break;
 
-  // case 'C':
-  // Serial.println("Sent 'C' ");
-  //   sendChar('C');
+  case 'C':
+  Serial.println("Sent 'C' ");
+    sendChar('C');
 
-  //   if (digitalRead(BUTTON_ONE) == LOW)
-  //   {
-  //     sendChar('F');
-  //     Serial.println("Sent: F");
-  //   }
+    if (digitalRead(BUTTON_ONE) == LOW)
+    {
+      sendChar('F');
+      Serial.println("Sent: F");
+    }
 
-  // case 'V':
-  //   Serial.println("Sent 'V' ");
-  //   sendChar('V');
-  //   int x = analogRead(JOYSTICK_X);
-  //   int y = analogRead(JOYSTICK_Y);
-  //   Serial.println("Sent 'X' ");
-  //   sendChar('X');
-  //   Serial.print("Sent: ");
-  //   Serial.println(x);
-  //   Serial.print("Sent: ");
-  //   sendInt(x);
+  case 'V':
+    Serial.println("Sent 'V' ");
+    sendChar('V');
+    int x = analogRead(JOYSTICK_X);
+    int y = analogRead(JOYSTICK_Y);
+    Serial.println("Sent 'X' ");
+    sendChar('X');
+    Serial.print("Sent: ");
+    Serial.println(x);
+    Serial.print("Sent: ");
+    sendInt(x);
 
-  //   Serial.println("Sent 'Y' ");
-  //   Serial.println(y);
-  //   sendChar('Y');
-  //   sendInt(y);
-  //   break;
-  // }
+    Serial.println("Sent 'Y' ");
+    Serial.println(y);
+    sendChar('Y');
+    sendInt(y);
+    break;
+  }
 
   delay(1000); // debounce and CPU relaxation
 }
