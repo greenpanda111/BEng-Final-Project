@@ -66,6 +66,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     int_bytes = recv_exact(conn,4)
                     num = struct.unpack('<I', int_bytes)[0]
                     print(f"[Integer] {num}")
+                    
                 elif (msg_type == 'C'):
                     char_byte = recv_exact(conn, 1)
                     ch = char_byte.decode()
@@ -83,6 +84,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     if ch in ['F', 'B', 'L', 'R']:
                         print(f"Received command: {ch}")
                         send_character_over_serial(ch)
+                        ch = ''
                     else:
                      print(f"Unknown command: {ch}")
     
@@ -91,6 +93,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     if ch in ['F', 'O', 'P']:
                         print(f"Received command: {ch}")
                         send_character_over_serial(ch)
+                        ch = ''
                     else:
                      print(f"Unknown command: {ch}")
                 
@@ -99,6 +102,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     if ch in ['F']:
                         print(f"Received command: {ch}")
                         send_character_over_serial(ch)
+                        ch = ''
                     else:
                         print(f"Unknown command: {ch}")
                 
