@@ -69,19 +69,19 @@ void loop()
     Serial.println("Sent: F");
   }
 
-  if (digitalRead(BUTTON_TWO) == LOW)
+  else if (digitalRead(BUTTON_TWO) == LOW)
   {
     sendChar('B');
     Serial.println("Sent: B");
   }
 
-  if (digitalRead(BUTTON_THREE) == LOW)
+  else if (digitalRead(BUTTON_THREE) == LOW)
   {
     sendChar('L');
     Serial.println("Sent: L");
   }
 
-  if (digitalRead(BUTTON_FOUR) == LOW)
+  else if (digitalRead(BUTTON_FOUR) == LOW)
   {
     sendChar('R');
     Serial.println("Sent: R");

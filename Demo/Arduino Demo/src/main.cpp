@@ -54,17 +54,17 @@ void loop()
         Serial.println("forward");
         forward();
       }
-      if (command == 'B')
+      else if (command == 'B')
       {
         Serial.println("backward");
         reverse();
       }
-      if (command == 'L')
+      else if (command == 'L')
       {
         Serial.println("left");
         turnLeft();
       }
-      if (command == 'R')
+      else if (command == 'R')
       {
         Serial.println("right");
         turnRight();
