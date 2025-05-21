@@ -29,7 +29,7 @@ void setup()
     leftMotor.setup();
     rightMotor.setup();
     Serial1.begin(115200);
-    Serial.begin(9600);
+    Serial.begin(115200);
     mode = 'Z';
     num = 0;
     X = -1;
@@ -46,8 +46,8 @@ void loop()
         if (Serial1.available() > 1)
         {
             char header = Serial1.read();
-            // Serial.print(header);
-            // Serial.println(" received");
+            Serial.print(header);
+            Serial.println(" received");
 
             if (header == 'I')
             {
@@ -61,15 +61,15 @@ void loop()
                 {
                     X = num;
                     X_Flag = false;
-                    // Serial.print("x:");
-                    // Serial.println(X);
+                    Serial.print("x:");
+                    Serial.println(X);
                 }
                 else if (Y_Flag == true)
                 {
                     Y = num;
                     Y_Flag = false;
-                    // Serial.print("y:");
-                    // Serial.println(Y);
+                    Serial.print("y:");
+                    Serial.println(Y);
                 }
             }
             else if (header == 'C')
@@ -78,18 +78,18 @@ void loop()
                 if (Serial1.available() >= 1)
                 {
                     opcode = (char)Serial1.read();
-                    // Serial.print(opcode);
-                    // Serial.println(" received");
+                    Serial.print(opcode);
+                    Serial.println(" command received");
 
                     if (opcode == 'X')
                     {
                         X_Flag = true;
-                        // Serial.println("x received");
+                        Serial.println("x received");
                     }
                     else if (opcode == 'Y')
                     {
                         Y_Flag = true;
-                        // Serial.println("y received");
+                        Serial.println("y received");
                     }
                 }
             }
@@ -109,24 +109,28 @@ void loop()
         case ('Z'):
             if (command == 'F')
             {
+                Serial.println("4 forward");
                 forward();
                 delay(10);
                 stop();
             }
             if (command == 'B')
             {
+                Serial.println("4 backward");
                 reverse();
                 delay(10);
                 stop();
             }
             if (command == 'L')
             {
+                Serial.println("4 left");
                 turnLeft();
                 delay(10);
                 stop();
             }
             if (command == 'R')
             {
+                Serial.println("4 right");
                 turnRight();
                 delay(10);
                 stop();
@@ -137,20 +141,23 @@ void loop()
             digitalWrite(LED_BUILTIN, HIGH);
             if (command == 'F')
             {
+                Serial.println("2 forward");
                 forward();
-                delay(10);
+                delay(100);
                 stop();
             }
             if (command == 'O')
             {
+                Serial.println("2 left forward");
                 leftMotor.move(DEFAULT_SPEED);
-                delay(10);
+                delay(100);
                 stop();
             }
             if (command == 'P')
             {
+                Serial.println("2 right forward");
                 rightMotor.move(DEFAULT_SPEED);
-                delay(10);
+                delay(100);
                 stop();
             }
 
@@ -158,8 +165,11 @@ void loop()
 
         case ('C'):
             turnRight();
+            delay(100);
+            stop();
             if (command == 'F')
             {
+                Serial.println("1 forward");
                 stop();
                 forward();
                 delay(100);
@@ -192,12 +202,6 @@ void loop()
                 leftSpeed = constrain(leftSpeed, -2048, 2048);
                 rightSpeed = constrain(rightSpeed, -2048, 2048);
 
-                // Normalize speeds to 0.0 - 1.0 range
-                // float leftPWM = (float)(leftSpeed + 2048) / 4095.0; // Map from [-2048, 2048] -> [0.0, 1.0]
-                // float rightPWM = (float)(rightSpeed + 2048) / 4095.0;
-
-                // Constrain just in case (floating-point precision safety)
-
                 float leftPWM = constrain(leftPWM, -1.0, 1.0);
                 float rightPWM = constrain(rightPWM, -1.0, 1.0);
 
@@ -218,30 +222,39 @@ void loop()
 }
 void forward()
 {
+    Serial.println("forward");
     leftMotor.move(DEFAULT_SPEED);
     rightMotor.move(DEFAULT_SPEED);
 }
 
 void reverse()
 {
+    Serial.println("reverse");
+
     leftMotor.move(-DEFAULT_SPEED);
     rightMotor.move(-DEFAULT_SPEED);
 }
 
 void stop()
 {
+    Serial.println("stop");
+
     leftMotor.move(0.0f);
     rightMotor.move(0.0f);
 }
 
 void turnLeft()
 {
+    Serial.println("left");
+
     leftMotor.move(DEFAULT_SPEED);
     rightMotor.move(-DEFAULT_SPEED);
 }
 
 void turnRight()
 {
+    Serial.println("right");
+
     leftMotor.move(-DEFAULT_SPEED);
     rightMotor.move(DEFAULT_SPEED);
 }

@@ -78,9 +78,9 @@ void loop()
   }
   else if (digitalRead(SINGLE_SWITCH_TOGGLE) == LOW)
   {
-    mode = 'C';
+    mode = 'M';
     Serial.println("1 pin mode selected");
-    client.write('C');
+    client.write('M');
   }
   else if (digitalRead(JOYSTICK_TOGGLE) == LOW)
   {
@@ -141,12 +141,8 @@ void loop()
 {
     Serial.println("Sent 'N' ");
     sendChar('N');
-    if (digitalRead(BUTTON_ONE) == LOW & digitalRead(BUTTON_TWO) == LOW)
-    {
-      sendChar('F');
-      Serial.println("Sent: F");
-    }
-    else if (digitalRead(BUTTON_ONE) == LOW)
+    
+    if (digitalRead(BUTTON_ONE) == LOW)
     {
       sendChar('O');
       Serial.println("Sent: O");
@@ -158,10 +154,10 @@ void loop()
     }
     break;
   }
-  case 'C':
+  case 'M':
   {
-    Serial.println("Sent 'C' ");
-    sendChar('C');
+    Serial.println("Sent 'M' ");
+    sendChar('M');
 
     if (digitalRead(BUTTON_ONE) == LOW)
     {
